@@ -48,7 +48,11 @@ abstract class FlutterGooglePlacesSdkPlatform extends PlatformInterface {
   /// This method should only be called once prior to using the Places API.
   /// You may call this method again to update the API key used;
   /// if so, all widgets and instances of PlacesClient will now use this new key.
-  Future<void> initialize(String apiKey, {Locale? locale, bool useNewApi = false}) {
+  Future<void> initialize(
+    String apiKey, {
+    Locale? locale,
+    bool useNewApi = false,
+  }) {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
@@ -58,7 +62,11 @@ abstract class FlutterGooglePlacesSdkPlatform extends PlatformInterface {
   }
 
   /// Updates the settings of the places client with the given API key and locale.
-  Future<void> updateSettings(String apiKey, {Locale? locale, bool? useNewApi}) {
+  Future<void> updateSettings(
+    String apiKey, {
+    Locale? locale,
+    bool? useNewApi,
+  }) {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
@@ -146,7 +154,7 @@ abstract class FlutterGooglePlacesSdkPlatform extends PlatformInterface {
     String? regionCode,
     bool? strictTypeFiltering,
   }) {
-    throw UnimplementedError('fetchPlacePhoto() has not been implemented.');
+    throw UnimplementedError('searchByText() has not been implemented.');
   }
 
   /// Search for place(s) of interest using a location.

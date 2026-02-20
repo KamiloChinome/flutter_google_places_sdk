@@ -1,8 +1,10 @@
-
-
 /// Filter to restrict the result set of autocomplete predictions to certain types.
 ///
 /// Ref: https://developers.google.com/maps/documentation/places/android-sdk/reference/com/google/android/libraries/places/api/model/TypeFilter
+@Deprecated(
+  'PlaceTypeFilter is deprecated in the Places API (New). '
+  'Use PlaceType with includedPrimaryTypes / excludedPrimaryTypes instead.',
+)
 enum PlaceTypeFilter {
   /// Only return geocoding results with a precise address.
   ADDRESS,

@@ -4,9 +4,10 @@ part 'place_field.g.dart';
 
 /// Used to specify which place data types to return.
 ///
-/// Ref: https://developers.google.com/maps/documentation/places/android-sdk/reference/com/google/android/libraries/places/api/model/Place.Field
+/// Ref: https://developers.google.com/maps/documentation/places/web-service/reference/rest/v1/places
 @JsonEnum(fieldRename: FieldRename.screamingSnake, alwaysCreate: true)
 enum PlaceField {
+  // ===== Existing fields =====
   FormattedAddress,
   FormattedAddressAdr,
   AddressComponents,
@@ -46,7 +47,45 @@ enum PlaceField {
   ServesVegetarianFood,
   ServesWine,
   Takeout,
-  AccessibilityOptions;
+  AccessibilityOptions,
+
+  // ===== New Places API (New) fields =====
+  PrimaryType,
+  PrimaryTypeDisplayName,
+  ShortFormattedAddress,
+  AdrFormatAddress,
+  GoogleMapsUri,
+  GoogleMapsLinks,
+  TimeZone,
+  PostalAddress,
+  CurrentSecondaryOpeningHours,
+  PaymentOptions,
+  ParkingOptions,
+  EvChargeOptions,
+  FuelOptions,
+  PriceRange,
+  SubDestinations,
+  ContainingPlaces,
+  AddressDescriptor,
+  GenerativeSummary,
+  ReviewSummary,
+  NeighborhoodSummary,
+  EvChargeAmenitySummary,
+  ConsumerAlerts,
+
+  // Boolean service attributes (new)
+  ServesCocktails,
+  ServesCoffee,
+  ServesDessert,
+  GoodForChildren,
+  AllowsDogs,
+  Restroom,
+  GoodForGroups,
+  GoodForWatchingSports,
+  LiveMusic,
+  OutdoorSeating,
+  MenuForChildren,
+  PureServiceAreaBusiness;
 
   factory PlaceField.fromJson(String name) {
     name = name.toLowerCase();
