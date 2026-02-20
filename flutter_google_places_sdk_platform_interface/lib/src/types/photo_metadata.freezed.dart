@@ -19,7 +19,12 @@ mixin _$PhotoMetadata {
  String get photoReference;/// The maximum width in which this photo is available.
  int get width;/// The maximum height in which this photo is available.
  int get height;/// The attributions that must be shown to the user if this photo is displayed.
- String get attributions;
+ String get attributions;/// The author attributions for this photo.
+///
+/// Available in the Places API (New).
+ List<AuthorAttribution>? get authorAttributions;/// A link where users can flag a problem with the photo.
+ String? get flagContentUri;/// A link to show the photo on Google Maps.
+ String? get googleMapsUri;
 /// Create a copy of PhotoMetadata
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -32,16 +37,16 @@ $PhotoMetadataCopyWith<PhotoMetadata> get copyWith => _$PhotoMetadataCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PhotoMetadata&&(identical(other.photoReference, photoReference) || other.photoReference == photoReference)&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height)&&(identical(other.attributions, attributions) || other.attributions == attributions));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PhotoMetadata&&(identical(other.photoReference, photoReference) || other.photoReference == photoReference)&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height)&&(identical(other.attributions, attributions) || other.attributions == attributions)&&const DeepCollectionEquality().equals(other.authorAttributions, authorAttributions)&&(identical(other.flagContentUri, flagContentUri) || other.flagContentUri == flagContentUri)&&(identical(other.googleMapsUri, googleMapsUri) || other.googleMapsUri == googleMapsUri));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,photoReference,width,height,attributions);
+int get hashCode => Object.hash(runtimeType,photoReference,width,height,attributions,const DeepCollectionEquality().hash(authorAttributions),flagContentUri,googleMapsUri);
 
 @override
 String toString() {
-  return 'PhotoMetadata(photoReference: $photoReference, width: $width, height: $height, attributions: $attributions)';
+  return 'PhotoMetadata(photoReference: $photoReference, width: $width, height: $height, attributions: $attributions, authorAttributions: $authorAttributions, flagContentUri: $flagContentUri, googleMapsUri: $googleMapsUri)';
 }
 
 
@@ -52,7 +57,7 @@ abstract mixin class $PhotoMetadataCopyWith<$Res>  {
   factory $PhotoMetadataCopyWith(PhotoMetadata value, $Res Function(PhotoMetadata) _then) = _$PhotoMetadataCopyWithImpl;
 @useResult
 $Res call({
- String photoReference, int width, int height, String attributions
+ String photoReference, int width, int height, String attributions, List<AuthorAttribution>? authorAttributions, String? flagContentUri, String? googleMapsUri
 });
 
 
@@ -69,13 +74,16 @@ class _$PhotoMetadataCopyWithImpl<$Res>
 
 /// Create a copy of PhotoMetadata
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? photoReference = null,Object? width = null,Object? height = null,Object? attributions = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? photoReference = null,Object? width = null,Object? height = null,Object? attributions = null,Object? authorAttributions = freezed,Object? flagContentUri = freezed,Object? googleMapsUri = freezed,}) {
   return _then(_self.copyWith(
 photoReference: null == photoReference ? _self.photoReference : photoReference // ignore: cast_nullable_to_non_nullable
 as String,width: null == width ? _self.width : width // ignore: cast_nullable_to_non_nullable
 as int,height: null == height ? _self.height : height // ignore: cast_nullable_to_non_nullable
 as int,attributions: null == attributions ? _self.attributions : attributions // ignore: cast_nullable_to_non_nullable
-as String,
+as String,authorAttributions: freezed == authorAttributions ? _self.authorAttributions : authorAttributions // ignore: cast_nullable_to_non_nullable
+as List<AuthorAttribution>?,flagContentUri: freezed == flagContentUri ? _self.flagContentUri : flagContentUri // ignore: cast_nullable_to_non_nullable
+as String?,googleMapsUri: freezed == googleMapsUri ? _self.googleMapsUri : googleMapsUri // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -157,10 +165,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String photoReference,  int width,  int height,  String attributions)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String photoReference,  int width,  int height,  String attributions,  List<AuthorAttribution>? authorAttributions,  String? flagContentUri,  String? googleMapsUri)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PhotoMetadata() when $default != null:
-return $default(_that.photoReference,_that.width,_that.height,_that.attributions);case _:
+return $default(_that.photoReference,_that.width,_that.height,_that.attributions,_that.authorAttributions,_that.flagContentUri,_that.googleMapsUri);case _:
   return orElse();
 
 }
@@ -178,10 +186,10 @@ return $default(_that.photoReference,_that.width,_that.height,_that.attributions
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String photoReference,  int width,  int height,  String attributions)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String photoReference,  int width,  int height,  String attributions,  List<AuthorAttribution>? authorAttributions,  String? flagContentUri,  String? googleMapsUri)  $default,) {final _that = this;
 switch (_that) {
 case _PhotoMetadata():
-return $default(_that.photoReference,_that.width,_that.height,_that.attributions);}
+return $default(_that.photoReference,_that.width,_that.height,_that.attributions,_that.authorAttributions,_that.flagContentUri,_that.googleMapsUri);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -195,10 +203,10 @@ return $default(_that.photoReference,_that.width,_that.height,_that.attributions
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String photoReference,  int width,  int height,  String attributions)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String photoReference,  int width,  int height,  String attributions,  List<AuthorAttribution>? authorAttributions,  String? flagContentUri,  String? googleMapsUri)?  $default,) {final _that = this;
 switch (_that) {
 case _PhotoMetadata() when $default != null:
-return $default(_that.photoReference,_that.width,_that.height,_that.attributions);case _:
+return $default(_that.photoReference,_that.width,_that.height,_that.attributions,_that.authorAttributions,_that.flagContentUri,_that.googleMapsUri);case _:
   return null;
 
 }
@@ -210,7 +218,7 @@ return $default(_that.photoReference,_that.width,_that.height,_that.attributions
 @JsonSerializable()
 
 class _PhotoMetadata implements PhotoMetadata {
-  const _PhotoMetadata({required this.photoReference, required this.width, required this.height, required this.attributions});
+  const _PhotoMetadata({required this.photoReference, required this.width, required this.height, required this.attributions, final  List<AuthorAttribution>? authorAttributions, this.flagContentUri, this.googleMapsUri}): _authorAttributions = authorAttributions;
   factory _PhotoMetadata.fromJson(Map<String, dynamic> json) => _$PhotoMetadataFromJson(json);
 
 /// Non-empty String used to identify the underlying photo.
@@ -221,6 +229,25 @@ class _PhotoMetadata implements PhotoMetadata {
 @override final  int height;
 /// The attributions that must be shown to the user if this photo is displayed.
 @override final  String attributions;
+/// The author attributions for this photo.
+///
+/// Available in the Places API (New).
+ final  List<AuthorAttribution>? _authorAttributions;
+/// The author attributions for this photo.
+///
+/// Available in the Places API (New).
+@override List<AuthorAttribution>? get authorAttributions {
+  final value = _authorAttributions;
+  if (value == null) return null;
+  if (_authorAttributions is EqualUnmodifiableListView) return _authorAttributions;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(value);
+}
+
+/// A link where users can flag a problem with the photo.
+@override final  String? flagContentUri;
+/// A link to show the photo on Google Maps.
+@override final  String? googleMapsUri;
 
 /// Create a copy of PhotoMetadata
 /// with the given fields replaced by the non-null parameter values.
@@ -235,16 +262,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PhotoMetadata&&(identical(other.photoReference, photoReference) || other.photoReference == photoReference)&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height)&&(identical(other.attributions, attributions) || other.attributions == attributions));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PhotoMetadata&&(identical(other.photoReference, photoReference) || other.photoReference == photoReference)&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height)&&(identical(other.attributions, attributions) || other.attributions == attributions)&&const DeepCollectionEquality().equals(other._authorAttributions, _authorAttributions)&&(identical(other.flagContentUri, flagContentUri) || other.flagContentUri == flagContentUri)&&(identical(other.googleMapsUri, googleMapsUri) || other.googleMapsUri == googleMapsUri));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,photoReference,width,height,attributions);
+int get hashCode => Object.hash(runtimeType,photoReference,width,height,attributions,const DeepCollectionEquality().hash(_authorAttributions),flagContentUri,googleMapsUri);
 
 @override
 String toString() {
-  return 'PhotoMetadata(photoReference: $photoReference, width: $width, height: $height, attributions: $attributions)';
+  return 'PhotoMetadata(photoReference: $photoReference, width: $width, height: $height, attributions: $attributions, authorAttributions: $authorAttributions, flagContentUri: $flagContentUri, googleMapsUri: $googleMapsUri)';
 }
 
 
@@ -255,7 +282,7 @@ abstract mixin class _$PhotoMetadataCopyWith<$Res> implements $PhotoMetadataCopy
   factory _$PhotoMetadataCopyWith(_PhotoMetadata value, $Res Function(_PhotoMetadata) _then) = __$PhotoMetadataCopyWithImpl;
 @override @useResult
 $Res call({
- String photoReference, int width, int height, String attributions
+ String photoReference, int width, int height, String attributions, List<AuthorAttribution>? authorAttributions, String? flagContentUri, String? googleMapsUri
 });
 
 
@@ -272,13 +299,16 @@ class __$PhotoMetadataCopyWithImpl<$Res>
 
 /// Create a copy of PhotoMetadata
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? photoReference = null,Object? width = null,Object? height = null,Object? attributions = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? photoReference = null,Object? width = null,Object? height = null,Object? attributions = null,Object? authorAttributions = freezed,Object? flagContentUri = freezed,Object? googleMapsUri = freezed,}) {
   return _then(_PhotoMetadata(
 photoReference: null == photoReference ? _self.photoReference : photoReference // ignore: cast_nullable_to_non_nullable
 as String,width: null == width ? _self.width : width // ignore: cast_nullable_to_non_nullable
 as int,height: null == height ? _self.height : height // ignore: cast_nullable_to_non_nullable
 as int,attributions: null == attributions ? _self.attributions : attributions // ignore: cast_nullable_to_non_nullable
-as String,
+as String,authorAttributions: freezed == authorAttributions ? _self._authorAttributions : authorAttributions // ignore: cast_nullable_to_non_nullable
+as List<AuthorAttribution>?,flagContentUri: freezed == flagContentUri ? _self.flagContentUri : flagContentUri // ignore: cast_nullable_to_non_nullable
+as String?,googleMapsUri: freezed == googleMapsUri ? _self.googleMapsUri : googleMapsUri // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

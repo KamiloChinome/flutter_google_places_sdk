@@ -55,6 +55,151 @@ _Place _$PlaceFromJson(Map json) => _Place(
   reviews: (json['reviews'] as List<dynamic>?)
       ?.map((e) => Review.fromJson(Map<String, Object?>.from(e as Map)))
       .toList(),
+  displayName: json['displayName'] == null
+      ? null
+      : LocalizedText.fromJson(
+          Map<String, Object?>.from(json['displayName'] as Map),
+        ),
+  primaryType: json['primaryType'] as String?,
+  primaryTypeDisplayName: json['primaryTypeDisplayName'] == null
+      ? null
+      : LocalizedText.fromJson(
+          Map<String, Object?>.from(json['primaryTypeDisplayName'] as Map),
+        ),
+  shortFormattedAddress: json['shortFormattedAddress'] as String?,
+  internationalPhoneNumber: json['internationalPhoneNumber'] as String?,
+  nationalPhoneNumber: json['nationalPhoneNumber'] as String?,
+  adrFormatAddress: json['adrFormatAddress'] as String?,
+  editorialSummary: json['editorialSummary'] == null
+      ? null
+      : LocalizedText.fromJson(
+          Map<String, Object?>.from(json['editorialSummary'] as Map),
+        ),
+  iconBackgroundColor: json['iconBackgroundColor'] as String?,
+  iconMaskBaseUri: json['iconMaskBaseUri'] as String?,
+  googleMapsUri: json['googleMapsUri'] as String?,
+  googleMapsLinks: json['googleMapsLinks'] == null
+      ? null
+      : GoogleMapsLinks.fromJson(
+          Map<String, Object?>.from(json['googleMapsLinks'] as Map),
+        ),
+  timeZone: json['timeZone'] == null
+      ? null
+      : PlaceTimeZone.fromJson(
+          Map<String, Object?>.from(json['timeZone'] as Map),
+        ),
+  postalAddress: json['postalAddress'] == null
+      ? null
+      : PostalAddress.fromJson(
+          Map<String, Object?>.from(json['postalAddress'] as Map),
+        ),
+  currentOpeningHours: json['currentOpeningHours'] == null
+      ? null
+      : OpeningHours.fromJson(
+          Map<String, Object?>.from(json['currentOpeningHours'] as Map),
+        ),
+  secondaryOpeningHours: (json['secondaryOpeningHours'] as List<dynamic>?)
+      ?.map((e) => OpeningHours.fromJson(Map<String, Object?>.from(e as Map)))
+      .toList(),
+  currentSecondaryOpeningHours:
+      (json['currentSecondaryOpeningHours'] as List<dynamic>?)
+          ?.map(
+            (e) => OpeningHours.fromJson(Map<String, Object?>.from(e as Map)),
+          )
+          .toList(),
+  curbsidePickup: json['curbsidePickup'] as bool?,
+  delivery: json['delivery'] as bool?,
+  dineIn: json['dineIn'] as bool?,
+  reservable: json['reservable'] as bool?,
+  servesBeer: json['servesBeer'] as bool?,
+  servesBreakfast: json['servesBreakfast'] as bool?,
+  servesBrunch: json['servesBrunch'] as bool?,
+  servesDinner: json['servesDinner'] as bool?,
+  servesLunch: json['servesLunch'] as bool?,
+  servesVegetarianFood: json['servesVegetarianFood'] as bool?,
+  servesWine: json['servesWine'] as bool?,
+  takeout: json['takeout'] as bool?,
+  servesCocktails: json['servesCocktails'] as bool?,
+  servesCoffee: json['servesCoffee'] as bool?,
+  servesDessert: json['servesDessert'] as bool?,
+  goodForChildren: json['goodForChildren'] as bool?,
+  allowsDogs: json['allowsDogs'] as bool?,
+  restroom: json['restroom'] as bool?,
+  goodForGroups: json['goodForGroups'] as bool?,
+  goodForWatchingSports: json['goodForWatchingSports'] as bool?,
+  liveMusic: json['liveMusic'] as bool?,
+  outdoorSeating: json['outdoorSeating'] as bool?,
+  menuForChildren: json['menuForChildren'] as bool?,
+  accessibilityOptions: json['accessibilityOptions'] == null
+      ? null
+      : AccessibilityOptions.fromJson(
+          Map<String, Object?>.from(json['accessibilityOptions'] as Map),
+        ),
+  paymentOptions: json['paymentOptions'] == null
+      ? null
+      : PaymentOptions.fromJson(
+          Map<String, Object?>.from(json['paymentOptions'] as Map),
+        ),
+  parkingOptions: json['parkingOptions'] == null
+      ? null
+      : ParkingOptions.fromJson(
+          Map<String, Object?>.from(json['parkingOptions'] as Map),
+        ),
+  evChargeOptions: json['evChargeOptions'] == null
+      ? null
+      : EvChargeOptions.fromJson(
+          Map<String, Object?>.from(json['evChargeOptions'] as Map),
+        ),
+  fuelOptions: json['fuelOptions'] == null
+      ? null
+      : FuelOptions.fromJson(
+          Map<String, Object?>.from(json['fuelOptions'] as Map),
+        ),
+  priceRange: json['priceRange'] == null
+      ? null
+      : PriceRange.fromJson(
+          Map<String, Object?>.from(json['priceRange'] as Map),
+        ),
+  priceLevelNew: json['priceLevelNew'] == null
+      ? null
+      : PriceLevel.fromJson(json['priceLevelNew'] as String),
+  generativeSummary: json['generativeSummary'] == null
+      ? null
+      : GenerativeSummary.fromJson(
+          Map<String, Object?>.from(json['generativeSummary'] as Map),
+        ),
+  reviewSummary: json['reviewSummary'] == null
+      ? null
+      : ReviewSummary.fromJson(
+          Map<String, Object?>.from(json['reviewSummary'] as Map),
+        ),
+  neighborhoodSummary: json['neighborhoodSummary'] == null
+      ? null
+      : NeighborhoodSummary.fromJson(
+          Map<String, Object?>.from(json['neighborhoodSummary'] as Map),
+        ),
+  evChargeAmenitySummary: json['evChargeAmenitySummary'] == null
+      ? null
+      : EvChargeAmenitySummary.fromJson(
+          Map<String, Object?>.from(json['evChargeAmenitySummary'] as Map),
+        ),
+  subDestinations: (json['subDestinations'] as List<dynamic>?)
+      ?.map((e) => SubDestination.fromJson(Map<String, Object?>.from(e as Map)))
+      .toList(),
+  containingPlaces: (json['containingPlaces'] as List<dynamic>?)
+      ?.map(
+        (e) => ContainingPlace.fromJson(Map<String, Object?>.from(e as Map)),
+      )
+      .toList(),
+  addressDescriptor: json['addressDescriptor'] == null
+      ? null
+      : AddressDescriptor.fromJson(
+          Map<String, Object?>.from(json['addressDescriptor'] as Map),
+        ),
+  consumerAlerts: (json['consumerAlerts'] as List<dynamic>?)
+      ?.map((e) => ConsumerAlert.fromJson(Map<String, Object?>.from(e as Map)))
+      .toList(),
+  pureServiceAreaBusiness: json['pureServiceAreaBusiness'] as bool?,
 );
 
 Map<String, dynamic> _$PlaceToJson(_Place instance) => <String, dynamic>{
@@ -80,6 +225,68 @@ Map<String, dynamic> _$PlaceToJson(_Place instance) => <String, dynamic>{
   'viewport': instance.viewport?.toJson(),
   'websiteUri': instance.websiteUri?.toString(),
   'reviews': instance.reviews?.map((e) => e.toJson()).toList(),
+  'displayName': instance.displayName?.toJson(),
+  'primaryType': instance.primaryType,
+  'primaryTypeDisplayName': instance.primaryTypeDisplayName?.toJson(),
+  'shortFormattedAddress': instance.shortFormattedAddress,
+  'internationalPhoneNumber': instance.internationalPhoneNumber,
+  'nationalPhoneNumber': instance.nationalPhoneNumber,
+  'adrFormatAddress': instance.adrFormatAddress,
+  'editorialSummary': instance.editorialSummary?.toJson(),
+  'iconBackgroundColor': instance.iconBackgroundColor,
+  'iconMaskBaseUri': instance.iconMaskBaseUri,
+  'googleMapsUri': instance.googleMapsUri,
+  'googleMapsLinks': instance.googleMapsLinks?.toJson(),
+  'timeZone': instance.timeZone?.toJson(),
+  'postalAddress': instance.postalAddress?.toJson(),
+  'currentOpeningHours': instance.currentOpeningHours?.toJson(),
+  'secondaryOpeningHours': instance.secondaryOpeningHours
+      ?.map((e) => e.toJson())
+      .toList(),
+  'currentSecondaryOpeningHours': instance.currentSecondaryOpeningHours
+      ?.map((e) => e.toJson())
+      .toList(),
+  'curbsidePickup': instance.curbsidePickup,
+  'delivery': instance.delivery,
+  'dineIn': instance.dineIn,
+  'reservable': instance.reservable,
+  'servesBeer': instance.servesBeer,
+  'servesBreakfast': instance.servesBreakfast,
+  'servesBrunch': instance.servesBrunch,
+  'servesDinner': instance.servesDinner,
+  'servesLunch': instance.servesLunch,
+  'servesVegetarianFood': instance.servesVegetarianFood,
+  'servesWine': instance.servesWine,
+  'takeout': instance.takeout,
+  'servesCocktails': instance.servesCocktails,
+  'servesCoffee': instance.servesCoffee,
+  'servesDessert': instance.servesDessert,
+  'goodForChildren': instance.goodForChildren,
+  'allowsDogs': instance.allowsDogs,
+  'restroom': instance.restroom,
+  'goodForGroups': instance.goodForGroups,
+  'goodForWatchingSports': instance.goodForWatchingSports,
+  'liveMusic': instance.liveMusic,
+  'outdoorSeating': instance.outdoorSeating,
+  'menuForChildren': instance.menuForChildren,
+  'accessibilityOptions': instance.accessibilityOptions?.toJson(),
+  'paymentOptions': instance.paymentOptions?.toJson(),
+  'parkingOptions': instance.parkingOptions?.toJson(),
+  'evChargeOptions': instance.evChargeOptions?.toJson(),
+  'fuelOptions': instance.fuelOptions?.toJson(),
+  'priceRange': instance.priceRange?.toJson(),
+  'priceLevelNew': _$PriceLevelEnumMap[instance.priceLevelNew],
+  'generativeSummary': instance.generativeSummary?.toJson(),
+  'reviewSummary': instance.reviewSummary?.toJson(),
+  'neighborhoodSummary': instance.neighborhoodSummary?.toJson(),
+  'evChargeAmenitySummary': instance.evChargeAmenitySummary?.toJson(),
+  'subDestinations': instance.subDestinations?.map((e) => e.toJson()).toList(),
+  'containingPlaces': instance.containingPlaces
+      ?.map((e) => e.toJson())
+      .toList(),
+  'addressDescriptor': instance.addressDescriptor?.toJson(),
+  'consumerAlerts': instance.consumerAlerts?.map((e) => e.toJson()).toList(),
+  'pureServiceAreaBusiness': instance.pureServiceAreaBusiness,
 };
 
 const _$BusinessStatusEnumMap = {
@@ -434,4 +641,13 @@ const _$PlaceTypeEnumMap = {
   PlaceType.WILDLIFE_REFUGE: 'WILDLIFE_REFUGE',
   PlaceType.WINE_BAR: 'WINE_BAR',
   PlaceType.YOGA_STUDIO: 'YOGA_STUDIO',
+};
+
+const _$PriceLevelEnumMap = {
+  PriceLevel.priceLevelUnspecified: 'PRICE_LEVEL_UNSPECIFIED',
+  PriceLevel.priceLevelFree: 'PRICE_LEVEL_FREE',
+  PriceLevel.priceLevelInexpensive: 'PRICE_LEVEL_INEXPENSIVE',
+  PriceLevel.priceLevelModerate: 'PRICE_LEVEL_MODERATE',
+  PriceLevel.priceLevelExpensive: 'PRICE_LEVEL_EXPENSIVE',
+  PriceLevel.priceLevelVeryExpensive: 'PRICE_LEVEL_VERY_EXPENSIVE',
 };

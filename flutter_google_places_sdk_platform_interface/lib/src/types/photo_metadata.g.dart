@@ -11,6 +11,13 @@ _PhotoMetadata _$PhotoMetadataFromJson(Map json) => _PhotoMetadata(
   width: (json['width'] as num).toInt(),
   height: (json['height'] as num).toInt(),
   attributions: json['attributions'] as String,
+  authorAttributions: (json['authorAttributions'] as List<dynamic>?)
+      ?.map(
+        (e) => AuthorAttribution.fromJson(Map<String, Object?>.from(e as Map)),
+      )
+      .toList(),
+  flagContentUri: json['flagContentUri'] as String?,
+  googleMapsUri: json['googleMapsUri'] as String?,
 );
 
 Map<String, dynamic> _$PhotoMetadataToJson(_PhotoMetadata instance) =>
@@ -19,4 +26,9 @@ Map<String, dynamic> _$PhotoMetadataToJson(_PhotoMetadata instance) =>
       'width': instance.width,
       'height': instance.height,
       'attributions': instance.attributions,
+      'authorAttributions': instance.authorAttributions
+          ?.map((e) => e.toJson())
+          .toList(),
+      'flagContentUri': instance.flagContentUri,
+      'googleMapsUri': instance.googleMapsUri,
     };
