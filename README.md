@@ -1,73 +1,148 @@
-# flutter_google_places_sdk
+# flutter_google_places_sdk (Fork)
 
-[![pub package](https://img.shields.io/pub/v/flutter_google_places_sdk.svg)](https://pub.dartlang.org/packages/flutter_google_places_sdk)
+> **This is a fork of [`matanshukry/flutter_google_places_sdk`](https://github.com/matanshukry/flutter_google_places_sdk).**
 
-![Tests](https://github.com/matanshukry/flutter_google_places_sdk/actions/workflows/tests.yml/badge.svg)
+## Why this fork exists
 
-A Flutter plugin for google places sdk that uses the native libraries on each platform.
-Check out [Rational](##RATIONAL) below to understand why you should use this plugin.
+The upstream repository has a low maintenance velocity, and Google is deprecating the Places SDK (Legacy) in favor of the [Places API (New)](https://developers.google.com/maps/documentation/places/web-service/op-overview) throughout 2025-2026. Key migration deadlines are approaching, and the upstream package does not yet reflect the full Places API (New) data model.
 
-## Usage
+This fork exists to:
 
-To use this plugin, add `flutter_google_places_sdk` as a [dependency in your pubspec.yaml file](https://flutter.dev/platform-plugins/).
+- **Expand the platform interface** to match the complete Places API (New) REST resource (30+ new types, ~45 new fields on `Place`, ~30 new `PlaceField` values).
+- **Accelerate migration** away from deprecated endpoints before Google enforces the cutoff.
+- **Unblock dependent projects** that need the new fields now rather than waiting for upstream reviews.
 
-## Web Usage
+Changes made here may be contributed back upstream when the original maintainer is available.
 
-When using the web support you also need to enable the Maps JavaScript API in google cloud:
+## Repository structure
 
-https://developers.google.com/maps/documentation/javascript/get-api-key
+This is a federated Flutter plugin monorepo with 9 packages:
 
-Limits:
-* Location restriction is not supported. See google issue tracker for more info: https://issuetracker.google.com/issues/36219203
+| Package | Description |
+|---------|-------------|
+| `flutter_google_places_sdk/` | App-facing package (depends on all platform implementations) |
+| `flutter_google_places_sdk_platform_interface/` | Shared contract: types, models, enums, platform interface |
+| `flutter_google_places_sdk_android/` | Android implementation (Kotlin, native Places SDK) |
+| `flutter_google_places_sdk_ios/` | iOS implementation (Swift, native Places SDK) |
+| `flutter_google_places_sdk_web/` | Web implementation (Maps JavaScript API) |
+| `flutter_google_places_sdk_http/` | HTTP/REST implementation (used by desktop platforms) |
+| `flutter_google_places_sdk_linux/` | Linux implementation (delegates to http) |
+| `flutter_google_places_sdk_macos/` | macOS implementation (delegates to http) |
+| `flutter_google_places_sdk_windows/` | Windows implementation (delegates to http) |
 
-## Rational
+Each package is independent with its own `pubspec.yaml`, version, and changelog.
 
-By now you probably found some other plugins, and wondering why this one was even created.
-Well, there's a good reason for that.
+## Prerequisites
 
-All other plugins will use http web requests rather than the native sdk.
+### FVM (Flutter Version Management)
 
-Google allows you to limit the usage of your api key to your android application.
-However, that only works when you're using the native SDK.
+This project uses [FVM](https://fvm.app/) to pin the Flutter SDK version. The pinned version is defined in `.fvm/fvm_config.json`.
 
-So when using the http web requests method, you can't actually limit it,
-and if someone can get your API key (usually not a problem if it's in a mobile client),
-it can be used anywhere outside of it.
+1. Install FVM if you don't have it:
+   ```bash
+   dart pub global activate fvm
+   ```
 
-## Example
+2. Install the pinned Flutter version:
+   ```bash
+   fvm install
+   ```
 
-``` dart
-import 'package:flutter/material.dart';
-import 'package:flutter_google_places_sdk/flutter_google_places_sdk.dart';
+3. Use FVM to run all Flutter/Dart commands:
+   ```bash
+   fvm flutter --version
+   ```
 
-void main() {
-  runApp(MaterialApp(
-    home: Scaffold(
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () async {
-            final places = FlutterGooglePlacesSdk('my-key');
-            final predictions =
-                await places.findAutocompletePredictions('Tel Aviv');
-            print('Result: $predictions');
-          },
-          child: Text('Predict and print to console'),
-        ),
-      ),
-    ),
-  ));
-}
+   Or set FVM as default for the project directory:
+   ```bash
+   fvm use
+   ```
 
+> **Tip:** If your IDE supports FVM (VS Code, Android Studio), configure it to use the FVM Flutter SDK path so that analysis and debugging use the correct version automatically.
+
+## Getting started
+
+After cloning the repository, you **must** generate the code files before anything else. The `*.g.dart` and `*.freezed.dart` files are not committed to version control -- they are generated locally via `build_runner`.
+
+### 1. Generate code for all packages that need it
+
+```bash
+# platform_interface (the most important one)
+cd flutter_google_places_sdk_platform_interface
+fvm dart run build_runner build --delete-conflicting-outputs
+
+# http package
+cd ../flutter_google_places_sdk_http
+fvm dart run build_runner build --delete-conflicting-outputs
 ```
 
-## Development & Contributing
+Without this step, the project will not compile -- imports will be missing and types will be unresolved.
 
-This is a side project of mine, hence issues are usually dealt with on weekends.
+### 2. Get dependencies for a specific package
 
-PRs are more than welcome if anyone want to contribute. There are 
+```bash
+cd flutter_google_places_sdk_platform_interface
+fvm flutter pub get
+```
 
-### Contribution Guidelines
+## Running tests
 
-1. General code quality will adhere to new PRs, although nothing too strict. Specifics will discussed in each PRs.
-2. This is a multi-platform plugin, and each package is maintained independently. As part of it, each commit that changes the version is also tagged per platform. 
-   The result is that changes that require multiple packages will require multiple commits - and hence multiple PRs.
+Each package has its own test suite. Run tests from within the package directory:
+
+```bash
+# Example: platform_interface tests
+cd flutter_google_places_sdk_platform_interface
+fvm flutter test
+
+# Example: main SDK tests
+cd flutter_google_places_sdk
+fvm flutter test
+```
+
+## Running the example app
+
+```bash
+cd flutter_google_places_sdk/example
+fvm flutter pub get
+fvm flutter run
+```
+
+You will need a valid Google Places API key. See the example app's documentation for configuration details.
+
+## Running static analysis
+
+```bash
+cd flutter_google_places_sdk_platform_interface
+fvm dart analyze
+```
+
+## Code generation workflow
+
+Whenever you modify a source file that uses `@freezed` or `@JsonSerializable` annotations, you must regenerate the corresponding `.g.dart` / `.freezed.dart` files:
+
+```bash
+# One-time build
+fvm dart run build_runner build --delete-conflicting-outputs
+
+# Watch mode (rebuilds on file changes)
+fvm dart run build_runner watch --delete-conflicting-outputs
+```
+
+**Never commit generated files.** They are excluded from version control via `.gitignore`.
+
+## Differences from upstream
+
+| Area | Upstream | This fork |
+|------|----------|-----------|
+| `platform_interface` version | 0.4.0 | 0.5.0 |
+| Places API (New) coverage | Partial | Full (~45 Place fields, 30+ types) |
+| Generated files in git | Committed | Ignored (regenerate locally) |
+| `PlaceTypeFilter` | Active | Deprecated (use `PlaceType`) |
+
+## Original README
+
+The original project description, usage examples, and rationale are preserved in [`flutter_google_places_sdk/README.md`](flutter_google_places_sdk/README.md).
+
+## License
+
+Same license as the upstream repository.
