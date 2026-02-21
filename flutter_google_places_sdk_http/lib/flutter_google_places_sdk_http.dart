@@ -6,15 +6,17 @@ import 'package:flutter_google_places_sdk_platform_interface/flutter_google_plac
     as inter;
 import 'package:http/http.dart' as http;
 
+import 'place_parsing.dart';
 import 'types/types.dart';
 
-final _kLogPrefix = 'flutter_google_place_sdk_windows_plugin :: WARN -';
+final _kLogPrefix = 'flutter_google_place_sdk_http_plugin :: WARN -';
 
 /// Http implementation plugin for flutter google places sdk
 class FlutterGooglePlacesSdkHttpPlugin
     extends inter.FlutterGooglePlacesSdkPlatform {
   static const _kAPI_HOST_V2 = 'https://places.googleapis.com';
   static const _kAPI_PLACES_V2 = '${_kAPI_HOST_V2}/v1/places:autocomplete';
+  static const _kAPI_PLACE_DETAILS_V2 = '${_kAPI_HOST_V2}/v1/places';
 
   String? _apiKey;
   Locale? _locale;
@@ -28,7 +30,11 @@ class FlutterGooglePlacesSdkHttpPlugin
   }
 
   @override
-  Future<void> initialize(String apiKey, {Locale? locale, bool useNewApi = false}) async {
+  Future<void> initialize(
+    String apiKey, {
+    Locale? locale,
+    bool useNewApi = false,
+  }) async {
     _apiKey = apiKey;
     _locale = locale;
   }
@@ -37,7 +43,11 @@ class FlutterGooglePlacesSdkHttpPlugin
   Future<bool?> isInitialized() async => _apiKey != null;
 
   @override
-  Future<void> updateSettings(String apiKey, {Locale? locale, bool? useNewApi}) async {
+  Future<void> updateSettings(
+    String apiKey, {
+    Locale? locale,
+    bool? useNewApi,
+  }) async {
     _apiKey = apiKey;
     if (locale != null) {
       _locale = locale;
@@ -154,11 +164,33 @@ class FlutterGooglePlacesSdkHttpPlugin
   @override
   Future<inter.FetchPlaceResponse> fetchPlace(
     String placeId, {
-    List<inter.PlaceField>? fields,
+    required List<inter.PlaceField> fields,
     bool? newSessionToken,
     String? regionCode,
   }) async {
-    throw UnimplementedError();
+    final headers = {
+      'Content-Type': 'application/json',
+      'X-Goog-Api-Key': _apiKey!,
+      'X-Goog-FieldMask': buildFieldMask(fields),
+    };
+
+    final langCode = _locale?.languageCode;
+    final uri = Uri.parse('$_kAPI_PLACE_DETAILS_V2/$placeId').replace(
+      queryParameters: {
+        if (langCode != null) 'languageCode': langCode,
+        if (regionCode != null) 'regionCode': regionCode,
+        if (_lastSessionToken != null) 'sessionToken': _lastSessionToken!,
+      },
+    );
+
+    // End session after fetchPlace (billing optimization).
+    if (newSessionToken == true || _lastSessionToken != null) {
+      _lastSessionToken = null;
+    }
+
+    final json = await _doGet(uri.toString(), headers: headers);
+    final place = parsePlaceFromJson(json);
+    return inter.FetchPlaceResponse(place);
   }
 
   @override
@@ -167,7 +199,58 @@ class FlutterGooglePlacesSdkHttpPlugin
     int? maxWidth,
     int? maxHeight,
   }) async {
-    throw UnimplementedError();
+    // The photoReference from Places API v2 is the resource name,
+    // e.g. "places/{placeId}/photos/{photoName}"
+    final photoName = photoMetadata.photoReference;
+
+    final queryParams = <String, String>{
+      'key': _apiKey!,
+      if (maxWidth != null) 'maxWidthPx': maxWidth.toString(),
+      if (maxHeight != null) 'maxHeightPx': maxHeight.toString(),
+      'skipHttpRedirect': 'true',
+    };
+
+    final uri = Uri.parse(
+      '$_kAPI_HOST_V2/v1/$photoName/media',
+    ).replace(queryParameters: queryParams);
+
+    final response = await http.get(uri);
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      throw 'Failed to fetch photo. Status: ${response.statusCode}, body: ${response.body}';
+    }
+
+    final jsonBody =
+        jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, Object?>;
+    final photoUri = jsonBody['photoUri'] as String?;
+    if (photoUri == null) {
+      throw 'No photoUri in response: $jsonBody';
+    }
+
+    return inter.FetchPlacePhotoResponse.imageUrl(photoUri);
+  }
+
+  Future<Map<String, Object?>> _doGet(
+    String url, {
+    Map<String, String> headers = const {},
+  }) async {
+    final response = await http.get(Uri.parse(url), headers: headers);
+
+    String? strBody;
+    String strBodyErr = '';
+    try {
+      strBody = utf8.decode(response.bodyBytes);
+    } catch (err) {
+      strBodyErr = 'Failed decoding body! $err';
+    }
+    if (response.statusCode < 200 ||
+        response.statusCode >= 300 ||
+        strBody == null) {
+      final err =
+          "Bad result on GET $url. Status code (${response.statusCode}), body: $strBody, bodyFetchErr (if any): $strBodyErr";
+      throw err;
+    }
+
+    return jsonDecode(strBody) as Map<String, Object?>;
   }
 
   Future<T> _doPost<T>(
