@@ -349,6 +349,94 @@ class FlutterGooglePlacesSdkHttpPlugin
     };
   }
 
+  @override
+  Future<inter.SearchNearbyResponse> searchNearby({
+    required List<inter.PlaceField> fields,
+    required inter.CircularBounds locationRestriction,
+    List<String>? includedTypes,
+    List<String>? includedPrimaryTypes,
+    List<String>? excludedTypes,
+    List<String>? excludedPrimaryTypes,
+    inter.NearbySearchRankPreference? rankPreference,
+    String? regionCode,
+    int? maxResultCount,
+  }) async {
+    final headers = {
+      'Content-Type': 'application/json',
+      'X-Goog-Api-Key': _apiKey!,
+      'X-Goog-FieldMask': buildFieldMask(fields, prefix: 'places'),
+    };
+
+    final body = _buildSearchNearbyBody(
+      locationRestriction: locationRestriction,
+      includedTypes: includedTypes,
+      includedPrimaryTypes: includedPrimaryTypes,
+      excludedTypes: excludedTypes,
+      excludedPrimaryTypes: excludedPrimaryTypes,
+      rankPreference: rankPreference,
+      regionCode: regionCode,
+      maxResultCount: maxResultCount,
+    );
+
+    final url = '$_kAPI_HOST_V2/v1/places:searchNearby';
+    final json = await _doPost(
+      url,
+      jsonEncode(body),
+      (json) => json,
+      headers: headers,
+    );
+
+    final places = _parsePlacesList(json);
+    return inter.SearchNearbyResponse(places);
+  }
+
+  Map<String, dynamic> _buildSearchNearbyBody({
+    required inter.CircularBounds locationRestriction,
+    List<String>? includedTypes,
+    List<String>? includedPrimaryTypes,
+    List<String>? excludedTypes,
+    List<String>? excludedPrimaryTypes,
+    inter.NearbySearchRankPreference? rankPreference,
+    String? regionCode,
+    int? maxResultCount,
+  }) {
+    final data = <String, dynamic>{
+      'locationRestriction': {
+        'circle': {
+          'center': {
+            'latitude': locationRestriction.center.lat,
+            'longitude': locationRestriction.center.lng,
+          },
+          'radius': locationRestriction.radius,
+        },
+      },
+    };
+
+    final langCode = _locale?.languageCode;
+    if (langCode != null) data['languageCode'] = langCode;
+
+    if (includedTypes != null && includedTypes.isNotEmpty) {
+      data['includedTypes'] = includedTypes;
+    }
+    if (includedPrimaryTypes != null && includedPrimaryTypes.isNotEmpty) {
+      data['includedPrimaryTypes'] = includedPrimaryTypes;
+    }
+    if (excludedTypes != null && excludedTypes.isNotEmpty) {
+      data['excludedTypes'] = excludedTypes;
+    }
+    if (excludedPrimaryTypes != null && excludedPrimaryTypes.isNotEmpty) {
+      data['excludedPrimaryTypes'] = excludedPrimaryTypes;
+    }
+    if (maxResultCount != null) data['maxResultCount'] = maxResultCount;
+    if (regionCode != null) data['regionCode'] = regionCode;
+
+    if (rankPreference != null) {
+      data['rankPreference'] = rankPreference.value;
+    }
+
+    return data;
+  }
+
   List<inter.Place> _parsePlacesList(Map<String, Object?> json) {
     final placesJson = json['places'] as List?;
     if (placesJson == null) return const [];
