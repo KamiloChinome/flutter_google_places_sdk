@@ -229,6 +229,134 @@ class FlutterGooglePlacesSdkHttpPlugin
     return inter.FetchPlacePhotoResponse.imageUrl(photoUri);
   }
 
+  @override
+  Future<inter.SearchByTextResponse> searchByText(
+    String textQuery, {
+    required List<inter.PlaceField> fields,
+    String? includedType,
+    int? maxResultCount,
+    inter.LatLngBounds? locationBias,
+    inter.LatLngBounds? locationRestriction,
+    double? minRating,
+    bool? openNow,
+    List<int>? priceLevels,
+    inter.TextSearchRankPreference? rankPreference,
+    String? regionCode,
+    bool? strictTypeFiltering,
+  }) async {
+    final headers = {
+      'Content-Type': 'application/json',
+      'X-Goog-Api-Key': _apiKey!,
+      'X-Goog-FieldMask': buildFieldMask(fields, prefix: 'places'),
+    };
+
+    final body = _buildSearchByTextBody(
+      textQuery: textQuery,
+      includedType: includedType,
+      maxResultCount: maxResultCount,
+      locationBias: locationBias,
+      locationRestriction: locationRestriction,
+      minRating: minRating,
+      openNow: openNow,
+      priceLevels: priceLevels,
+      rankPreference: rankPreference,
+      regionCode: regionCode,
+      strictTypeFiltering: strictTypeFiltering,
+    );
+
+    final url = '$_kAPI_HOST_V2/v1/places:searchText';
+    final json = await _doPost(
+      url,
+      jsonEncode(body),
+      (json) => json,
+      headers: headers,
+    );
+
+    final places = _parsePlacesList(json);
+    return inter.SearchByTextResponse(places);
+  }
+
+  Map<String, dynamic> _buildSearchByTextBody({
+    required String textQuery,
+    String? includedType,
+    int? maxResultCount,
+    inter.LatLngBounds? locationBias,
+    inter.LatLngBounds? locationRestriction,
+    double? minRating,
+    bool? openNow,
+    List<int>? priceLevels,
+    inter.TextSearchRankPreference? rankPreference,
+    String? regionCode,
+    bool? strictTypeFiltering,
+  }) {
+    final data = <String, dynamic>{'textQuery': textQuery};
+
+    final langCode = _locale?.languageCode;
+    if (langCode != null) {
+      data['languageCode'] = langCode;
+    }
+
+    if (includedType != null) data['includedType'] = includedType;
+    if (maxResultCount != null) data['maxResultCount'] = maxResultCount;
+    if (minRating != null) data['minRating'] = minRating;
+    if (openNow != null) data['openNow'] = openNow;
+    if (strictTypeFiltering != null) {
+      data['strictTypeFiltering'] = strictTypeFiltering;
+    }
+    if (regionCode != null) data['regionCode'] = regionCode;
+
+    if (rankPreference != null) {
+      data['rankPreference'] = rankPreference.value;
+    }
+
+    if (priceLevels != null && priceLevels.isNotEmpty) {
+      data['priceLevels'] = priceLevels.map(_intToPriceLevel).toList();
+    }
+
+    if (locationBias != null) {
+      data['locationBias'] = {'rectangle': _boundsToJson(locationBias)};
+    }
+    if (locationRestriction != null) {
+      data['locationRestriction'] = {
+        'rectangle': _boundsToJson(locationRestriction),
+      };
+    }
+
+    return data;
+  }
+
+  Map<String, dynamic> _boundsToJson(inter.LatLngBounds bounds) {
+    return {
+      'low': {
+        'latitude': bounds.southwest.lat,
+        'longitude': bounds.southwest.lng,
+      },
+      'high': {
+        'latitude': bounds.northeast.lat,
+        'longitude': bounds.northeast.lng,
+      },
+    };
+  }
+
+  String _intToPriceLevel(int level) {
+    return switch (level) {
+      0 => 'PRICE_LEVEL_FREE',
+      1 => 'PRICE_LEVEL_INEXPENSIVE',
+      2 => 'PRICE_LEVEL_MODERATE',
+      3 => 'PRICE_LEVEL_EXPENSIVE',
+      4 => 'PRICE_LEVEL_VERY_EXPENSIVE',
+      _ => 'PRICE_LEVEL_UNSPECIFIED',
+    };
+  }
+
+  List<inter.Place> _parsePlacesList(Map<String, Object?> json) {
+    final placesJson = json['places'] as List?;
+    if (placesJson == null) return const [];
+    return placesJson
+        .map((p) => parsePlaceFromJson(p as Map<String, Object?>))
+        .toList(growable: false);
+  }
+
   Future<Map<String, Object?>> _doGet(
     String url, {
     Map<String, String> headers = const {},
